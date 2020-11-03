@@ -30,4 +30,20 @@ public class ContactController {
         return newContact;
 
     }
+
+    //this method will populate the edit Contact dialog with selected contact's data
+    public void editContact(Contact contact){
+        firstNameField.setText(contact.getFirstName());
+        lastNameField.setText(contact.getLastName());
+        phoneNumberField.setText(contact.getPhoneNumber());
+        notesField.setText(contact.getNotes());
+    }
+
+    //update the data with the help of that present in he dialog
+    public void updateContact(Contact contact){
+        contact.setFirstName(firstNameField.getText());
+        contact.setLastName(lastNameField.getText());
+        contact.setPhoneNumber(phoneNumberField.getText());
+        contact.setNotes(notesField.getText());
+    }
 }

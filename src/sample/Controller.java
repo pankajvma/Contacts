@@ -2,6 +2,7 @@ package sample;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TableView;
@@ -51,6 +52,43 @@ public class Controller {
             ContactController contactController = fxmlLoader.getController();
             Contact newContact = contactController.getNewContact();
             data.addContact(newContact);
+            data.saveContacts();
+        }
+    }
+
+    public void  showEditContactDialog(){
+        Contact selectedContact = contactsTable.getSelectionModel().getSelectedItem();
+        if(selectedContact == null){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Contact Selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Please Select the contact you want to edit.");
+            alert.showAndWait();
+            return;
+        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(mainPanel.getScene().getWindow());
+        dialog.setTitle("Edit contact");
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("contactDialog.fxml"));
+        try{
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch(IOException e){
+            System.out.println("Couldn't load the Dialog");
+            e.printStackTrace();
+            return;
+        }
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+        ContactController contactController = fxmlLoader.getController();
+        contactController.editContact(selectedContact);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
+            contactController.updateContact(selectedContact);
             data.saveContacts();
         }
     }
