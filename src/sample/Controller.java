@@ -2,10 +2,7 @@ package sample;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import sample.datamodel.Contact;
 import sample.datamodel.ContactData;
@@ -91,5 +88,29 @@ public class Controller {
             contactController.updateContact(selectedContact);
             data.saveContacts();
         }
+    }
+
+    public void deleteContact(){
+        Contact selectedContact = contactsTable.getSelectionModel().getSelectedItem();
+        if(selectedContact == null){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No Contact selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a contact that you want to delete.");
+            alert.showAndWait();
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Contact");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete the selected contact: "
+                                +selectedContact.getFirstName() + " " +selectedContact.getLastName());
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
+            data.deleteContact((selectedContact));
+            data.saveContacts();
+        }
+
     }
 }
